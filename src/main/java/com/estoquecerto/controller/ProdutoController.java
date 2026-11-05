@@ -1,6 +1,7 @@
 package com.estoquecerto.controller;
 
-import com.estoquecerto.entity.Produto;
+import com.estoquecerto.dto.ProdutoRequestDTO;
+import com.estoquecerto.dto.ProdutoResponseDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,8 +34,8 @@ public class ProdutoController {
     }
 
 @PostMapping
-public ResponseEntity<Produto> cadastrar(@RequestBody Produto produto) {
-    Produto produtoSalvo = produtoService.salvar(produto);
+public ResponseEntity<ProdutoResponseDTO> cadastrar(@RequestBody ProdutoRequestDTO dto) {
+    ProdutoResponseDTO produtoSalvo = produtoService.salvar(dto);
 
     return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -42,25 +43,25 @@ public ResponseEntity<Produto> cadastrar(@RequestBody Produto produto) {
 }
 
 @GetMapping
-public ResponseEntity<List<Produto>> listarTodos() {
+public ResponseEntity<List<ProdutoResponseDTO>> listarTodos() {
     return ResponseEntity.ok(produtoService.listarTodos());
 }
 
 
 @GetMapping("/{id}")
-public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
-    Produto produto = produtoService.buscarPorId(id)
+public ResponseEntity<ProdutoResponseDTO> buscarPorId(@PathVariable Long id) {
+    ProdutoResponseDTO produto = produtoService.buscarPorId(id)
         .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
 
     return ResponseEntity.ok(produto);
 }
 
 @PutMapping("/{id}")
-public ResponseEntity<Produto> atualizar(
+public ResponseEntity<ProdutoResponseDTO> atualizar(
         @PathVariable Long id,
-        @RequestBody Produto produto) {
+        @RequestBody ProdutoRequestDTO dto) {
 
-    Produto produtoAtualizado = produtoService.atualizar(id, produto);
+    ProdutoResponseDTO produtoAtualizado = produtoService.atualizar(id, dto);
 
     return ResponseEntity.ok(produtoAtualizado);
 }
