@@ -22,7 +22,7 @@ Desenvolver uma aplicação que permita aos pequenos comerciantes organizar suas
 
 - Agenor Santos Britto
 - Gabriel Santos Britto
-- Thaylon Ferreira
+- Thailon Ferreira
 
 ## 5. Tecnologias utilizadas
 
