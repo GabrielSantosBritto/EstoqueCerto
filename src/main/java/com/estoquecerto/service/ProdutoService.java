@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import com.estoquecerto.exception.ProdutoNaoEncontradoException;
 
+import com.estoquecerto.dto.ProdutoMapper;
+import com.estoquecerto.dto.ProdutoRequestDTO;
+import com.estoquecerto.dto.ProdutoResponseDTO;
+
 @Service
 public class ProdutoService {
 
@@ -16,19 +20,28 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public Produto salvar(Produto produto) {
-        return produtoRepository.save(produto);
-    }
+    public ProdutoResponseDTO salvar(ProdutoRequestDTO dto) {
 
-    public List<Produto> listarTodos() {
-    return produtoRepository.findAll();
+    Produto produto = ProdutoMapper.toEntity(dto);
+
+    Produto produtoSalvo = produtoRepository.save(produto);
+
+    return ProdutoMapper.toDTO(produtoSalvo);
 }
 
-public Optional<Produto> buscarPorId(Long id) {
-    return produtoRepository.findById(id);
+    public List<ProdutoResponseDTO> listarTodos() {
+    return produtoRepository.findAll()
+            .stream()
+            .map(ProdutoMapper::toDTO)
+            .toList();
 }
 
-public Produto atualizar(Long id, Produto dadosAtualizados) {
+public Optional<ProdutoResponseDTO> buscarPorId(Long id) {
+    return produtoRepository.findById(id)
+            .map(ProdutoMapper::toDTO);
+}
+
+public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dadosAtualizados) {
 
     Produto produto = produtoRepository.findById(id)
         .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado")); 
@@ -41,7 +54,8 @@ public Produto atualizar(Long id, Produto dadosAtualizados) {
     produto.setQuantidadeMinima(dadosAtualizados.getQuantidadeMinima());
     produto.setPreco(dadosAtualizados.getPreco());
 
-    return produtoRepository.save(produto);
+    Produto produtoAtualizado = produtoRepository.save(produto);
+    return ProdutoMapper.toDTO(produtoAtualizado);
 }
 
 public void excluir(Long id) {
