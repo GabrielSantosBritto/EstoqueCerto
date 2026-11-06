@@ -16,4 +16,22 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(FornecedorNaoEncontradoException.class)
+    public ResponseEntity<String> tratarFornecedorNaoEncontrado(
+            FornecedorNaoEncontradoException exception) {
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CnpjJaCadastradoException.class)
+    public ResponseEntity<String> tratarCnpjJaCadastrado(
+            CnpjJaCadastradoException exception) {
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(exception.getMessage());
+    }
 }
