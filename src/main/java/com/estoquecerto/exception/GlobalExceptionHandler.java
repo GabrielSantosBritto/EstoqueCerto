@@ -34,4 +34,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(BrasilApiException.class)
+    public ResponseEntity<String> tratarErroBrasilApi(BrasilApiException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)
+                .body(exception.getMessage());
+    }
 }
