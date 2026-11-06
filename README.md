@@ -6,7 +6,13 @@ O **EstoqueCerto** é um sistema de gestão de compras e controle de estoque des
 
 A aplicação busca centralizar informações sobre fornecedores, produtos e compras, permitindo acompanhar os itens adquiridos, registrar a entrada das mercadorias no estoque e manter o histórico das movimentações realizadas.
 
-## 2. Problema e justificativa
+## 2. Integrantes da equipe
+
+- Agenor Santos Britto
+- Gabriel Santos Britto
+- Thailon Da Paixão Ferreira
+
+## 3. Problema e justificativa
 
 Micro e pequenos comerciantes frequentemente enfrentam dificuldades para organizar suas compras, acompanhar os pedidos realizados e controlar a entrada de mercadorias.
 
@@ -14,15 +20,9 @@ A utilização de controles manuais ou ferramentas descentralizadas pode dificul
 
 O EstoqueCerto propõe uma solução para esse problema por meio de uma aplicação que centraliza o gerenciamento de fornecedores, produtos e compras, integrando o recebimento das mercadorias ao controle de estoque.
 
-## 3. Objetivo do projeto
+## 4. Objetivo do projeto
 
 Desenvolver uma aplicação que permita aos pequenos comerciantes organizar suas compras de mercadorias, acompanhar os produtos adquiridos, atualizar o estoque a partir da confirmação do recebimento das compras e controlar as movimentações e devoluções de mercadorias.
-
-## 4. Integrantes da equipe
-
-- Agenor Santos Britto
-- Gabriel Santos Britto
-- Thailon Da Paixão Ferreira
 
 ## 5. Tecnologias utilizadas
 
@@ -36,17 +36,21 @@ Desenvolver uma aplicação que permita aos pequenos comerciantes organizar suas
 
 ## 6. API externa
 
-O projeto utilizará a **BrasilAPI**, uma API pública que disponibiliza informações cadastrais de empresas a partir de consultas de CNPJ.
+O projeto utiliza a **BrasilAPI**, uma API pública que disponibiliza informações cadastrais de empresas a partir de consultas de CNPJ.
 
-A integração permitirá consultar informações cadastrais de uma empresa durante o processo de cadastro de fornecedores, auxiliando na validação dos dados informados.
+A integração permite consultar informações cadastrais de uma empresa, auxiliando na conferência dos dados de fornecedores.
 
-**Endpoint previsto:**
+**Endpoint da API externa:**
 
 `GET https://brasilapi.com.br/api/cnpj/v1/{cnpj}`
 
+**Endpoint disponibilizado pelo EstoqueCerto:**
+
+`GET /api/brasilapi/cnpj/{cnpj}`
+
 Documentação: https://brasilapi.com.br/docs
 
-> A integração está prevista no projeto e será implementada por meio de um cliente responsável pela comunicação com a API externa.
+A integração possui um cliente responsável pela comunicação HTTP com a API externa. A implementação já foi desenvolvida e compilada, mas o teste de consulta real e a validação dos campos retornados ainda estão pendentes.
 
 ## 7. Requisitos funcionais
 
@@ -111,10 +115,53 @@ O sistema utiliza uma arquitetura em camadas, organizando as responsabilidades d
 - **Mapper:** realiza a conversão entre DTOs e entidades.
 - **Repository:** realiza o acesso e a persistência dos dados.
 - **Entity:** representa as entidades do domínio e seu mapeamento para o banco de dados.
+- **Client:** concentra a comunicação com serviços e APIs externas.
 
 A aplicação utiliza Spring Boot, Spring Data JPA e Hibernate para integração com o banco de dados MySQL.
 
-## 10. Escopo do projeto
+## 10. Padrões de projeto
+
+O EstoqueCerto utiliza padrões arquiteturais e prevê a aplicação de padrões GoF para organizar o código, separar responsabilidades e facilitar a manutenção e evolução do sistema.
+
+### 10.1. Padrões arquiteturais
+
+**MVC (Model-View-Controller)**
+
+Utilizado por meio do Spring MVC para organizar o backend e separar as responsabilidades de controle das requisições, processamento e representação dos dados.
+
+**Front Controller**
+
+Implementado pelo `DispatcherServlet` do Spring MVC, que centraliza a entrada das requisições HTTP e encaminha cada solicitação ao controlador correspondente.
+
+**DTO (Data Transfer Object)**
+
+Utilizado para transportar dados entre as camadas da aplicação, evitando a exposição direta das entidades de domínio nas requisições e respostas da API.
+
+Exemplos: `ProdutoRequestDTO`, `ProdutoResponseDTO`, `FornecedorRequestDTO` e `FornecedorResponseDTO`.
+
+**DAO / Repository**
+
+Implementado por meio dos repositórios Spring Data JPA, abstraindo o acesso e a persistência dos dados e mantendo a camada de negócios desacoplada dos detalhes do banco de dados.
+
+### 10.2. Padrões GoF planejados
+
+O projeto prevê a aplicação de pelo menos dois padrões GoF, escolhidos de acordo com as necessidades do domínio.
+
+**Factory Method**
+
+Possível aplicação na criação de diferentes tipos de movimentações de estoque, considerando suas origens, como compras, devoluções e ajustes.
+
+O objetivo é centralizar a criação desses objetos e facilitar a inclusão de novos tipos de movimentação.
+
+**Command**
+
+Possível aplicação na representação de operações de negócio, como confirmar o recebimento de uma compra e concluir uma devolução.
+
+O objetivo é encapsular essas operações em objetos específicos, separando a solicitação da execução das ações.
+
+**Observação:** os padrões GoF apresentados nesta seção representam o planejamento arquitetural e ainda dependem de implementação e validação no código. A documentação será atualizada conforme sua aplicação no projeto.
+
+## 11. Escopo do projeto
 
 O sistema contempla o gerenciamento de:
 
@@ -132,7 +179,7 @@ O controle de estoque está integrado ao processo de recebimento das compras. As
 
 O sistema também contempla o processo de devolução de mercadorias ao fornecedor, mantendo o vínculo com a compra de origem e os lotes correspondentes.
 
-## 11. Documentação
+## 12. Documentação
 
 Os diagramas do projeto estão disponíveis na pasta `docs`:
 
@@ -140,7 +187,7 @@ Os diagramas do projeto estão disponíveis na pasta `docs`:
 - `der.png`: representa a estrutura do banco de dados e os relacionamentos entre as tabelas.
 - `diagrama-componentes.png`: representa a organização dos componentes e suas dependências.
 
-## 12. Execução do projeto
+## 13. Execução do projeto
 
 O projeto utiliza Maven Wrapper para gerenciamento e execução.
 
@@ -153,6 +200,18 @@ Na raiz do projeto, execute:
 ```
 
 A aplicação será disponibilizada localmente na porta `8080`.
+
+## 14. Testes da API
+
+A interação e validação dos fluxos da aplicação são realizadas por meio do Postman.
+
+O projeto prevê a disponibilização de uma Postman Collection em formato JSON, contendo as requisições pré-configuradas para validação das rotas da API.
+
+## 15. Versionamento
+
+O código-fonte do EstoqueCerto é versionado por meio do Git e hospedado em um repositório público no GitHub.
+
+O desenvolvimento é organizado em branches e commits separados por funcionalidades, permitindo acompanhar a evolução do projeto.
 
 ---
 
